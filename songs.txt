@@ -1,0 +1,39 @@
+Track: Echoes of Tomorrow
+Artist: Luna Echoes
+Total Sales (Year 20XX): 1,145,976
+
+Track: Midnight Drive
+Artist: The Night Riders
+Total Sales (Year 20XX): 1,824,069
+
+Track: Rising Sun
+Artist: Solar Flares
+Total Sales (Year 20XX): 1,266,730
+
+Track: Neon Streets
+Artist: City Lights
+Total Sales (Year 20XX): 1,643,540
+
+Track: Whispers in the Dark
+Artist: Mystic Whispers
+Total Sales (Year 20XX): 1,374,927
+
+Track: Eternal Skies
+Artist: Sky Gazers
+Total Sales (Year 20XX): 1,046,096
+
+Track: Lost in Dreams
+Artist: Dream Chasers
+Total Sales (Year 20XX): 743,364
+
+Track: Ocean Waves
+Artist: Wave Dancers
+Total Sales (Year 20XX): 828,499
+
+Track: Dancing Shadows
+Artist: Shadow Movers
+Total Sales (Year 20XX): 1,946,299
+
+Track: Starlight Serenade
+Artist: Celestial Sounds
+Total Sales (Year 20XX): 1,839,630
