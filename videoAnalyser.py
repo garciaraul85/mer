@@ -35,3 +35,13 @@ response = client.chat.completions.create(
 )
 result = response.choices[0].message.content
 print(result)
+
+## Text to Speech ##
+speech_file_path = "football.mp4"
+response = client.audio.speech.create(
+    model="tts-1",
+    voice="onyx",
+    input=result
+)
+
+response.stream_to_file(speech_file_path)
