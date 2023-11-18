@@ -20,3 +20,18 @@ while video.isOpened():
 # Release video object
 video.release()
 print(len(base64Frames), "frames read.")
+
+response = client.chat.completions.create(
+    model="gpt-4-vision-preview",
+    messages=[{
+        "role": "user",
+        "content": [
+                f"These are frames of a video. Create a short voiceover script in the style of a football commentator For 5 seconds. Only include the narration.",
+                # get every 322 frame
+                *map(lambda x: {"image": x, "resize": 768}, base64Frames[0::322]),
+            ]
+    }],
+    max_tokens=500
+)
+result = response.choices[0].message.content
+print(result)
