@@ -1,6 +1,7 @@
 import cv2
 import base64
 import openai
+from moviepy.editor import VideoFileClip, AudioFileClip
 
 # Initialize OpenAI client
 client = openai.OpenAI()
@@ -37,7 +38,7 @@ result = response.choices[0].message.content
 print(result)
 
 ## Text to Speech ##
-speech_file_path = "football.mp4"
+speech_file_path = "football.mp3"
 response = client.audio.speech.create(
     model="tts-1",
     voice="onyx",
@@ -45,3 +46,14 @@ response = client.audio.speech.create(
 )
 
 response.stream_to_file(speech_file_path)
+
+
+## Merge video and audio ##
+
+video_clip = VideoFileClip("football.mp4")
+audio_clip = AudioFileClip("football.mp3")
+final_clip = video_clip.set_audio(audio_clip)
+final_clip.write_videofile("football_with_commentary.mp4", codec='libx264', audio_codec='aac')
+video_clip.close()
+audio_clip.close()
+final_clip.close()
