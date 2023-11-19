@@ -2,7 +2,11 @@ import re
 import cv2
 import base64
 import openai
-from moviepy.editor import VideoFileClip, AudioFileClip
+from moviepy.editor import VideoFileClip, AudioFileClip, CompositeAudioClip
+
+def convert_timestamp_to_seconds(timestamp):
+    minutes, seconds = map(int, timestamp.split(':'))
+    return minutes * 60 + seconds
 
 # Initialize OpenAI client
 client = openai.OpenAI()
@@ -93,13 +97,32 @@ for i, (timestamp, text) in enumerate(segments):
     response.stream_to_file(clip_path)
 
 
-
 ## Merge video and audio ##
 
-# video_clip = VideoFileClip("football.mp4")
-# audio_clip = AudioFileClip("football.mp3")
-# final_clip = video_clip.set_audio(audio_clip)
-# final_clip.write_videofile("football_with_commentary.mp4", codec='libx264', audio_codec='aac')
-# video_clip.close()
-# audio_clip.close()
-# final_clip.close()
+# Load the video clip
+video_clip = VideoFileClip("football.mp4")
+
+# Initialize an array to hold all audio clips with their start times
+audio_clips_with_start_times = []
+
+# Create the audio clips and put them into the array
+for i, (timestamp, _) in enumerate(segments):
+    start_time = convert_timestamp_to_seconds(timestamp)
+    audio_clip = AudioFileClip(f"segment_{i}.mp3").set_start(start_time)
+    audio_clips_with_start_times.append(audio_clip)
+
+
+# Combine all audio clips
+final_audio = CompositeAudioClip(audio_clips_with_start_times)
+
+# Set the combined audio to the video clip
+final_clip = video_clip.set_audio(final_audio)
+
+# Export the final video
+final_clip.write_videofile("football_with_segmented_commentary.mp4", codec="libx264", audio_codec="aac")
+
+# Close the clips
+video_clip.close()
+final_clip.close()
+for audio_clip in audio_clips_with_start_times:
+    audio_clip.close()
