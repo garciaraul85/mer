@@ -46,7 +46,7 @@ print(len(base64Frames), "frames read.")
 
 
 # Prompt
-prompt = f"These are frames from a football match video lasting {video_length_seconds:.2f} seconds. I need a scripted voiceover for a football commentary segmented by timestamps. Each segment should start with a timestamp, like this: [00:00] 'Commentary segment...' [00:08] 'Next commentary segment...' [00:15] 'Another commentary segment...' Please ensure each part of the commentary has a timestamp at the beginning. The content doesn't have to be real-time but should be in the style of a football game commentary."
+prompt = f"These are selected frames from a football match video. The total length of the video is exactly {video_length_seconds:.2f} seconds. I need a scripted voiceover for a football commentary segmented by timestamps. Each segment should start with a timestamp, like this: [00:00] 'Commentary segment...' [00:08] 'Next commentary segment...' [00:15] 'Another commentary segment...' Please ensure each part of the commentary has a timestamp at the beginning. The content doesn't have to be real-time but should be in the style of a football game commentary."
 
 # Set a higher temperature for creativity, if desired
 temperature = 0.9
