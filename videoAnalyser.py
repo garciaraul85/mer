@@ -46,10 +46,10 @@ print(len(base64Frames), "frames read.")
 
 
 # Prompt
-prompt = f"These are selected frames from a football match video, which is {video_length_seconds:.2f} seconds long. Please create a short, concise scripted voiceover for a football commentary, segmented by timestamps. Each comment should be brief, ensuring it fits within the time frame without overlapping. The comments should be direct and to the point, suitable for the style of a football game commentary. Here's the format: [00:00] 'Quick observation...' [00:05] 'Another brief comment...' and so on. Please make sure the total commentary does not exceed the video length of {video_length_seconds:.2f} seconds."
+prompt = f"These are selected frames from a {video_length_seconds:.2f} long football match video. Please create a highly concise scripted voiceover for a football commentary, segmented by timestamps. Each comment should be brief, ideally fitting within a 5-second window, ensuring the total commentary does not exceed {video_length_seconds:.2f} seconds. Format: [00:00] 'Quick observation...' [00:05] 'Another brief comment...' Tailor the comments to match the style of a succinct football game commentary."
 
 # Set a higher temperature for creativity, if desired
-temperature = 0.9
+temperature = 1
 
 response = client.chat.completions.create(
     model="gpt-4-vision-preview",
@@ -104,12 +104,21 @@ video_clip = VideoFileClip("football.mp4")
 
 # Initialize an array to hold all audio clips with their start times
 audio_clips_with_start_times = []
+end_time_of_last_clip = 0
 
 # Create the audio clips and put them into the array
 for i, (timestamp, _) in enumerate(segments):
     start_time = convert_timestamp_to_seconds(timestamp)
     audio_clip = AudioFileClip(f"segment_{i}.mp3").set_start(start_time)
-    audio_clips_with_start_times.append(audio_clip)
+    
+    # Ensure the new clip doesn't start before the previous one ends
+    start_time = max(start_time, end_time_of_last_clip)
+    
+    # Set the start time and add the clip to the list
+    audio_clips_with_start_times.append(audio_clip.set_start(start_time))
+
+    # Update the end time of the last clip
+    end_time_of_last_clip = start_time + audio_clip.duration
 
 
 # Combine all audio clips
