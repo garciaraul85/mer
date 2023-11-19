@@ -1,3 +1,4 @@
+import re
 import cv2
 import base64
 import openai
@@ -27,7 +28,7 @@ frames_for_11_seconds = int(fps * 11)
 base64Frames = []
 frame_count = 0
 
-while video.isOpened(): #and frame_count < frames_for_11_seconds:
+while video.isOpened():
     success, frame = video.read()
     if not success:
         break
@@ -57,27 +58,48 @@ response = client.chat.completions.create(
     }],
     max_tokens=500
 )
-result = response.choices[0].message.content
-print(result)
+script = response.choices[0].message.content
+print(script)
 
+# Regular expression to find all timestamped segments
+# this regular expression matches segments of text that start with a timestamp in square brackets, 
+# followed by commentary text in quotes, and ensures that each segment is followed by either another 
+# timestamp or the end of the string
+pattern = re.compile(r"\[\s*(\d{2}:\d{2})\s*\]\s*\"(.*?)\"(?=\s*\[\d{2}:\d{2}\]|$)", re.DOTALL)
+
+# Find all matches
+segments = pattern.findall(script)
+
+# Check the structure of segments
+print("Number of segments found:", len(segments))
+for segment in segments:
+    print(segment)
 
 ## Text to Speech ##
-#speech_file_path = "football.mp3"
-#response = client.audio.speech.create(
-#    model="tts-1",
-#    voice="onyx",
-#    input=result
-#)
+for i, (timestamp, text) in enumerate(segments):
+    # Remove or adjust the timestamp in the text, if necessary
+    segment_text = text  # Adjust as needed
 
-#response.stream_to_file(speech_file_path)
+    # Call the TTS API for each segment
+    response = client.audio.speech.create(
+        model="tts-1",
+        voice="onyx",
+        input=segment_text
+    )
+    
+    # Save each audio clip
+    clip_path = f"segment_{i}.mp3"
+    print(clip_path)
+    response.stream_to_file(clip_path)
+
 
 
 ## Merge video and audio ##
 
-#video_clip = VideoFileClip("football.mp4")
-#audio_clip = AudioFileClip("football.mp3")
-#final_clip = video_clip.set_audio(audio_clip)
-#final_clip.write_videofile("football_with_commentary.mp4", codec='libx264', audio_codec='aac')
-#video_clip.close()
-#audio_clip.close()
-#final_clip.close()
+# video_clip = VideoFileClip("football.mp4")
+# audio_clip = AudioFileClip("football.mp3")
+# final_clip = video_clip.set_audio(audio_clip)
+# final_clip.write_videofile("football_with_commentary.mp4", codec='libx264', audio_codec='aac')
+# video_clip.close()
+# audio_clip.close()
+# final_clip.close()
